@@ -49,11 +49,11 @@ const Home = () => {
             <span className="text-red-600 text-">Your Home</span>
           </h2>
           <p className="py-3 text-base ">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries
+
+            Welcome to our online grocery store. We deliver the freshest fruits, vegetables, and more right to your doorstep.
+            Our goal is to make grocery shopping convenient and hassle-free for our customers. With just a few clicks,
+            you can have your groceries delivered in no time. We believe in providing high-quality produce and exceptional
+            service to our customers. Start your effortless shopping experience with us today.
           </p>
           <button className="font-bold bg-red-500 text-slate-200 px-4 py-2 rounded-md">
             Order Now
