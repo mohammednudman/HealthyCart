@@ -20,7 +20,7 @@ const Header = () => {
     toast("Logout successfully");
   };
 
-  const cartItemNumber = useSelector((state)=>state.product.cartItem)
+  const cartItemNumber = useSelector((state) => state.product.cartItem)
   return (
     <header className="fixed shadow-md w-full h-16 px-2 md:px-4 z-50 bg-white">
       {/* desktop */}
@@ -74,12 +74,20 @@ const Header = () => {
                     Logout ({userData.firstName}){" "}
                   </p>
                 ) : (
-                  <Link
-                    to={"login"}
-                    className="whitespace-nowrap cursor-pointer px-2"
-                  >
-                    Login
-                  </Link>
+                  <>
+                    <Link
+                      to={"login"}
+                      className="whitespace-nowrap cursor-pointer px-2"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to={"update-preference"}
+                      className="whitespace-nowrap cursor-pointer px-2"
+                    >
+                      Update Preference
+                    </Link>
+                  </>
                 )}
                 <nav className="text-base md:text-lg flex flex-col md:hidden">
                   <Link to={""} className="px-2 py-1">

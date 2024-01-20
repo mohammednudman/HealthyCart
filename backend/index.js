@@ -19,6 +19,8 @@ const userSchema = mongoose.Schema({
     },
     password: String,
     confirmPassword: String,
+    bmi: String,
+    preference: String,
     image: String,
 });
 
@@ -67,6 +69,43 @@ app.post("/login", (req, res) => {
                 message: "Email is not available, please sign up",
                 alert: false,
             });
+        }
+    });
+});
+
+app.post("/userdetails", (req, res) => {
+    const { bmi, foodPreference, email } = req.body;
+
+    // Validate request body
+    if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+
+    console.log(email, bmi, foodPreference)
+
+    if (!bmi || !foodPreference) {
+        return res.status(400).json({ message: "Both BMI and food preference are required" });
+    }
+
+    userModel.findOne({email}, async (err, user) => {
+        if (err) {
+            console.error(`Error occurred while finding the user with email ${email}: ${err}`);
+            return res.status(500).json({ message: 'Server error while finding user' });
+        }
+
+        if (!user) {
+            return res.status(404).json({ message: "No user found with the provided email" });
+        }
+
+        user.bmi = bmi;
+        user.foodPreference = foodPreference;
+
+        try {
+            await user.save();
+            res.json({ message: "User details updated successfully!" });
+        } catch (err) {
+            console.error(`Error occurred while saving user details: ${err}`);
+            res.status(500).json({ message: 'Error while updating user details' });
         }
     });
 });

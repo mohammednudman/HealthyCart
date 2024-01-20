@@ -57,8 +57,7 @@ def generate_recipe_endpoint():
 
 
 if __name__ == '__main__':
-    # Check if GPU is available
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = 'cpu'
     print(f'Using device: {device}')
 
     # Load the model and tokenizer
