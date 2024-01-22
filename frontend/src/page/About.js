@@ -5,8 +5,8 @@ import Member2Image from '../assest/partner.jpeg';
 const About = () => {
 
     const members = [
-        { name: "Maryam", image: Member1Image, role: "Frontend" },
-        { name: "Member 2", image: Member2Image, role: "Backend" }
+        { name: "Maryam Ashrafi", image: Member1Image, role: "Frontend" },
+        { name: "Umaid Attar", image: Member2Image, role: "Backend" }
     ];
 
     return (
