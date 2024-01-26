@@ -26,10 +26,10 @@ const Home = () => {
   };
 
 
- 
 
 
-  
+
+
 
 
 
@@ -63,20 +63,20 @@ const Home = () => {
         <div className="md:w-1/2 flex flex-wrap gap-5 p-4 justify-center">
           {homeProductCartList[0]
             ? homeProductCartList.map((el) => {
-                return (
-                  <HomeCard
-                    key={el._id}
-                    id={el._id}
-                    image={el.image}
-                    name={el.name}
-                    price={el.price}
-                    category={el.category}
-                  />
-                );
-              })
+              return (
+                <HomeCard
+                  key={el._id}
+                  id={el._id}
+                  image={el.image}
+                  name={el.name}
+                  price={el.price}
+                  category={el.category}
+                />
+              );
+            })
             : loadingArray.map((el, index) => {
-                return <HomeCard key={index+"loading"} loading={"Loading..."} />;
-              })}
+              return <HomeCard key={index + "loading"} loading={"Loading..."} />;
+            })}
         </div>
       </div>
 
@@ -106,24 +106,24 @@ const Home = () => {
         >
           {homeProductCartListVegetables[0]
             ? homeProductCartListVegetables.map((el) => {
-                return (
-                  <CardFeature
-                    key={el._id+"vegetable"}
-                    id={el._id}
-                    name={el.name}
-                    category={el.category}
-                    price={el.price}
-                    image={el.image}
-                  />
-                );
-              })
-            : loadingArrayFeature.map((el,index) => (
-                <CardFeature loading="Loading..." key={index+"cartLoading"} />
-              ))}
+              return (
+                <CardFeature
+                  key={el._id + "vegetable"}
+                  id={el._id}
+                  name={el.name}
+                  category={el.category}
+                  price={el.price}
+                  image={el.image}
+                />
+              );
+            })
+            : loadingArrayFeature.map((el, index) => (
+              <CardFeature loading="Loading..." key={index + "cartLoading"} />
+            ))}
         </div>
       </div>
-      
-      <AllProduct heading={"Your Product"}/>
+
+      <AllProduct heading={"Your Product"} />
     </div>
   );
 };
