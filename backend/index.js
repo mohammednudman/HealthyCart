@@ -3,6 +3,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const Stripe = require('stripe')
+const bcrypt = require('bcrypt')
+
 const app = express();
 app.use(cors());
 app.use(express.json({limit: "10mb"}));
@@ -18,9 +20,8 @@ const userSchema = mongoose.Schema({
         unique: true,
     },
     password: String,
-    confirmPassword: String,
     bmi: String,
-    preference: String,
+    foodPreference: String,
     image: String,
 });
 
@@ -31,27 +32,40 @@ app.get("/", (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-    const {email} = req.body;
-    userModel.findOne({email: email}, async (err, result) => {
+    const { password, email } = req.body;
+
+    userModel.findOne({ email: email }, async (err, result) => {
         if (result) {
-            res.send({message: "Email id is already registered", alert: false});
+            res.send({ message: "Email id is already registered", alert: false });
         } else {
-            const data = new userModel(req.body);
             try {
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(password, salt);
+
+                req.body.password = hashedPassword;
+
+                const data = new userModel(req.body);
                 const save = await data.save();
-                res.send({message: "Successfully sign up", alert: true});
+
+                res.send({ message: "Successfully sign up", alert: true });
+
             } catch (error) {
                 console.log(error);
-                res.status(500).send({message: 'Error while saving user'});
+                res.status(500).send({ message: 'Error while saving user' });
             }
         }
     });
 });
 
 app.post("/login", (req, res) => {
-    const {email} = req.body;
-    userModel.findOne({email: email}, (err, result) => {
+    const {email, password} = req.body;
+    userModel.findOne({email: email}, async(err, result) => {
         if (result) {
+            const isMatch = await bcrypt.compare(password, result.password);
+            if (!isMatch) {
+                return res.send({ message: "Invalid password.", alert: false });
+            }
+
             const dataSend = {
                 _id: result._id,
                 firstName: result.firstName,
@@ -74,27 +88,27 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/userdetails", (req, res) => {
-    const { bmi, foodPreference, email } = req.body;
+    const {bmi, foodPreference, email} = req.body;
 
     // Validate request body
     if (!email) {
-        return res.status(400).json({ message: "Email is required" });
+        return res.status(400).json({message: "Email is required"});
     }
 
     console.log(email, bmi, foodPreference)
 
     if (!bmi || !foodPreference) {
-        return res.status(400).json({ message: "Both BMI and food preference are required" });
+        return res.status(400).json({message: "Both BMI and food preference are required"});
     }
-
+    
     userModel.findOne({email}, async (err, user) => {
         if (err) {
             console.error(`Error occurred while finding the user with email ${email}: ${err}`);
-            return res.status(500).json({ message: 'Server error while finding user' });
+            return res.status(500).json({message: 'Server error while finding user'});
         }
 
         if (!user) {
-            return res.status(404).json({ message: "No user found with the provided email" });
+            return res.status(404).json({message: "No user found with the provided email"});
         }
 
         user.bmi = bmi;
@@ -102,10 +116,10 @@ app.post("/userdetails", (req, res) => {
 
         try {
             await user.save();
-            res.json({ message: "User details updated successfully!" });
+            return res.status(200).send({message: "User details updated successfully!"});
         } catch (err) {
             console.error(`Error occurred while saving user details: ${err}`);
-            res.status(500).json({ message: 'Error while updating user details' });
+            res.status(500).send({message: 'Error while updating user details'});
         }
     });
 });
