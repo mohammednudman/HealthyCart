@@ -178,7 +178,7 @@ mongoose.connect(process.env.MONGODB_URL, {
 })
     .then(() => {
         app.listen(PORT, () => {
-            console.log("server is running at port : " + PORT);
+            console.log("Server is running at port : " + PORT);
         });
     })
     .catch((err) => console.log(err));
