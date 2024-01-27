@@ -45,10 +45,15 @@ To run this project locally, you need to have the following software installed:
     cd HealthyCart
     ```
 
-3. Use Docker Compose to build and start the services:
+3. Only for the first time to install all the dependencies and packages:
 
     ```shell
-    docker-compose up -d --build
+    install.bat
+    ```
+4. To start all the server :
+
+    ```shell
+    startup.bat
     ```
 
 The application should now be running at localhost:3000.
