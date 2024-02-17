@@ -1,11 +1,11 @@
-import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useNavigate, useParams} from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import AllProduct from "../component/AllProduct";
-import {addCartItem} from "../redux/productSlide";
+import { addCartItem } from "../redux/productSlide";
 
 const Menu = () => {
-    const {filterby} = useParams();
+    const { filterby } = useParams();
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const productData = useSelector((state) => state.product.productList);
@@ -27,7 +27,7 @@ const Menu = () => {
                     <>
                         <div className="max-w-sm  overflow-hidden w-full p-5">
                             <img
-                                src={productDisplay?.image} // here and in other places
+                                src={productDisplay?.image}
                                 className="hover:scale-105 transition-all h-full"
                             />
                         </div>
@@ -42,10 +42,10 @@ const Menu = () => {
                             </p>
                             <div className="flex gap-3">
                                 <button onClick={handleBuy}
-                                        className="bg-yellow-500 py-1 mt-2 rounded hover:bg-yellow-600 min-w-[100px]">Buy
+                                    className="bg-yellow-500 py-1 mt-2 rounded hover:bg-yellow-600 min-w-[100px]">Buy
                                 </button>
                                 <button onClick={handleAddCartProduct}
-                                        className="bg-yellow-500 py-1 mt-2 rounded hover:bg-yellow-600 min-w-[100px]">Add
+                                    className="bg-yellow-500 py-1 mt-2 rounded hover:bg-yellow-600 min-w-[100px]">Add
                                     Cart
                                 </button>
                             </div>
@@ -57,7 +57,7 @@ const Menu = () => {
                     </>)}
             </div>
 
-            <AllProduct heading={"Related Product"}/>
+            <AllProduct heading={"Related Product"} />
         </div>
     );
 };

@@ -5,15 +5,20 @@ import HomeCard from "../component/HomeCard";
 import { GrPrevious, GrNext } from "react-icons/gr";
 import FilterProduct from "../component/FilterProduct";
 import AllProduct from "../component/AllProduct";
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
   const productData = useSelector((state) => state.product.productList);
   const homeProductCartList = productData.slice(1, 5);
   const homeProductCartListVegetables = productData.filter(
-    (el) => el.category === "vegetable",
+    (el) => el.category === "vegetables",
     []
   );
+
+  console.log(productData)
+
+  const navigate = useNavigate();
   const loadingArray = new Array(4).fill(null);
   const loadingArrayFeature = new Array(10).fill(null);
 
@@ -24,14 +29,6 @@ const Home = () => {
   const preveProduct = () => {
     slideProductRef.current.scrollLeft -= 200;
   };
-
-
-
-
-
-
-
-
 
   return (
     <div className="p-2 md:p-4">
@@ -55,7 +52,9 @@ const Home = () => {
             you can have your groceries delivered in no time. We believe in providing high-quality produce and exceptional
             service to our customers. Start your effortless shopping experience with us today.
           </p>
-          <button className="font-bold bg-red-500 text-slate-200 px-4 py-2 rounded-md">
+          <button onClick={() => {
+            navigate("/menu")
+          }} className="font-bold bg-red-500 text-slate-200 px-4 py-2 rounded-md">
             Order Now
           </button>
         </div>

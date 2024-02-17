@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assest/logo.png";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { BsCartFill } from "react-icons/bs";
@@ -11,6 +11,7 @@ const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const userData = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const handleShowMenu = () => {
     setShowMenu((preve) => !preve);
@@ -66,13 +67,22 @@ const Header = () => {
                   </Link>
                 )}
 
-                {userData.image ? (
-                  <p
-                    className="cursor-pointer text-white px-2 bg-red-500"
-                    onClick={handleLogout}
-                  >
-                    Logout ({userData.firstName}){" "}
-                  </p>
+                {userData.email ? (
+                  <div className="whitespace-nowrap">
+                    <p
+                      className="cursor-pointer text-black px-2 shadow flex flex-col"
+                      onClick={handleLogout}
+                    >
+                      Logout ({userData.firstName}){" "}
+                    </p>
+                    <p
+                      className="cursor-pointer text-black px-2"
+                      onClick={() => {
+                        navigate("/userdetails")
+                      }}>
+                      Update Preference
+                    </p>
+                  </div>
                 ) : (
                   <>
                     <Link
