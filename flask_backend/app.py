@@ -2,26 +2,41 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from langchain.prompts import PromptTemplate
 from langchain.llms import CTransformers
-
+import json
+import re
 
 app = Flask(__name__)
 CORS(app)
 
 
+def remove_g(match):
+    return match.group(1)
+
+
+def clean_response(response):
+    index_of_equal = response.find("=")
+    response = response[index_of_equal + 1:].strip()
+    response += "}"
+
+    numeric_g_pattern = re.compile(r'(\d+)g')
+    response = numeric_g_pattern.sub(remove_g, response)
+    return response
+
+
 def generate_recipe(food_type, ingredients, bmi):
     llm = CTransformers(model='models/llama-2-13b-chat.ggmlv3.q2_K.bin',
                         model_type="llama",
+                        local_files_only=True,
                         config={
                             "temperature": 0.01,
-                            "max_tokens": 400
+                            "max_new_tokens": 300,
                         })
     template = f"""
-        
         Generate a step by step recipe which is personalized Indian {food_type} recipe with the following ingredients: {ingredients}
 
-         BMI (Body Mass Index): {bmi}
+        BMI (Body Mass Index): {bmi}
 
-         Please provide the serving size for the recipe so that the calorie information can be calculated accurately. Once you specify the serving size, I will generate the estimated calorie consumption per serving for your personalized recipe.
+        According to the serving size of one adult, also provide the calorie intake for the same, and do mention total calories.
     """
 
     prompt = PromptTemplate(input_variables=["food_type", "ingredients", "bmi"],
@@ -29,7 +44,7 @@ def generate_recipe(food_type, ingredients, bmi):
 
     response = llm(prompt.format(food_type=food_type,
                    ingredients=ingredients, bmi=bmi))
-
+    # response = clean_response(response)
     print(response)
     return response
 

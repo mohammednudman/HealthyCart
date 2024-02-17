@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const serverURL = 'http://localhost:5000';
+const serverURL = 'http://127.0.0.1:5000';
 
 const generateRecipe = async (cartItems, foodType, bmi) => {
     const ingredients = cartItems.map(item => item.name);

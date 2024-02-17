@@ -1,6 +1,6 @@
 import React from "react";
 
-const RecipeContainer = ({ recipe, loading }) => { // Add loading prop
+const RecipeContainer = ({ recipe, loading }) => {
     const containerStyle = {
         display: "flex",
         flexDirection: "column",
@@ -10,20 +10,18 @@ const RecipeContainer = ({ recipe, loading }) => { // Add loading prop
         borderRadius: "5px",
         padding: "20px",
         margin: "20px 0",
-        height: "200px",
-        fontSize: "28px",
-        fontWeight: "bold"
+        height: "400px",
+        fontSize: "16px",
     };
 
     const titleStyle = {
         fontSize: "28px",
         fontWeight: "bold",
-        marginBottom: "10px"
+        marginBottom: "10px",
     };
 
     const descriptionStyle = {
-        fontSize: "16px",
-        textAlign: "center"
+        textAlign: "center",
     };
 
     // Check if loading
@@ -36,11 +34,10 @@ const RecipeContainer = ({ recipe, loading }) => { // Add loading prop
         return <div style={containerStyle}>No recipe generated yet</div>;
     }
 
-    // Render recipe
     return (
         <div style={containerStyle}>
             <h2 style={titleStyle}>Generated Recipe</h2>
-            <p style={descriptionStyle}>{recipe}</p>
+            <p style={descriptionStyle}>{recipe.recipe}</p>
         </div>
     );
 };

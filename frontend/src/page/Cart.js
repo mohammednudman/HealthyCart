@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CartProduct from "../component/cartProduct";
 import emptyCartImage from "../assest/empty.gif"
@@ -6,20 +6,39 @@ import { toast } from "react-hot-toast";
 import { loadStripe } from '@stripe/stripe-js';
 import { useNavigate } from "react-router-dom";
 import RecipeContainer from "../component/RecipeContainer";
-import { fetchRecipe } from "../redux/productSlide";
+import apiService from "../services/apiService";
+import axios from "axios"
 
 const Cart = () => {
     const productCartItem = useSelector((state) => state.product.cartItem);
     const user = useSelector(state => state.user)
-    const recipe = useSelector(state => state.generateRecipe);
-    const loadingRecipe = useSelector(state => state.product.loadingRecipe)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [recipe, setRecipe] = useState({});
+    const [loadingRecipe, setLoadingRecipe] = useState(false);
 
     useEffect(() => {
-        dispatch(fetchRecipe(productCartItem))
-    }, [dispatch, productCartItem]);
+        fetchRecipe()
+        setLoadingRecipe(false)
+    }, [productCartItem]);
 
+    const fetchRecipe = async () => {
+        try {
+            setLoadingRecipe(true);
+            const userState = JSON.parse(localStorage.getItem("userState"));
+            const data = { "email": userState.email }
+
+            // Fetch user details
+            const response = await axios.post(`${process.env.REACT_APP_SERVER_DOMIN}/getUserDetails`, data);
+            const { foodType, bmi } = response.data;
+
+            let recipe = await apiService.generateRecipe(productCartItem, foodType, bmi);
+
+            setRecipe(recipe);
+        } catch (error) {
+            console.error("Error fetching recipe: ", error);
+        }
+    }
 
     const totalPrice = productCartItem.reduce(
         (acc, curr) => acc + parseInt(curr.total),
@@ -117,8 +136,6 @@ const Cart = () => {
             </div>
 
             <RecipeContainer recipe={recipe} loading={loadingRecipe} />
-
-
         </>
     );
 };
