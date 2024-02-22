@@ -37,6 +37,8 @@ def generate_recipe(food_type, ingredients, bmi):
         BMI (Body Mass Index): {bmi}
 
         According to the serving size of one adult, also provide the calorie intake for the same, and do mention total calories.
+
+        Give all the steps and calorie count in plain text form, not in a code
     """
 
     prompt = PromptTemplate(input_variables=["food_type", "ingredients", "bmi"],

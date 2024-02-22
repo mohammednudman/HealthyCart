@@ -172,7 +172,7 @@ app.post("/uploadProduct", async (req, res) => {
 });
 
 app.get("/product", async (req, res) => {
-    const data = await productModel.find({}).limit(75)
+    const data = await productModel.find({})
     res.send(JSON.stringify(data))
 });
 

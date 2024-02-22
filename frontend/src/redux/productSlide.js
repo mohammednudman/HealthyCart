@@ -1,78 +1,55 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
 
-
-// Load state from local storage if available, otherwise use initialState
-const initialState = localStorage.getItem("productState")
-    ? JSON.parse(localStorage.getItem("productState"))
-    : {
-        productList: [],
-        cartItem: [],
-        generatedRecipe: null,
-        loadingRecipe: false
-    };
+const initialCartState = localStorage.getItem("cartState")
+    ? JSON.parse(localStorage.getItem("cartState"))
+    : [];
 
 export const productSlice = createSlice({
     name: "product",
-    initialState,
+    initialState: {
+        productList: [],
+        cartItem: initialCartState,
+        generatedRecipe: null,
+        loadingRecipe: false
+    },
     reducers: {
         setDataProduct: (state, action) => {
             state.productList = [...action.payload];
         },
         addCartItem: (state, action) => {
-            const check = state.cartItem.some((el) => el._id === action.payload._id);
-            if (check) {
-                toast("Already Item in Cart");
+            const existingItem = state.cartItem.find(item => item._id === action.payload._id);
+            if (existingItem) {
+                toast("Item already in cart");
             } else {
-                toast("Item Add successfully");
-                const total = action.payload.price;
-                state.cartItem = [
-                    ...state.cartItem,
-                    { ...action.payload, qty: 1, total: total },
-                ];
-
-                localStorage.setItem("productState", JSON.stringify(state));
+                toast("Item added successfully");
+                state.cartItem.push({ ...action.payload, qty: 1, total: action.payload.price });
+                localStorage.setItem("cartState", JSON.stringify(state.cartItem));
             }
         },
         deleteCartItem: (state, action) => {
-            toast("one Item Delete");
-            const index = state.cartItem.findIndex((el) => el._id === action.payload);
-            state.cartItem.splice(index, 1);
-            console.log(index);
-            // Save state to local storage
-            localStorage.setItem("productState", JSON.stringify(state));
+            toast("Item deleted from cart");
+            state.cartItem = state.cartItem.filter(item => item._id !== action.payload);
+            localStorage.setItem("cartState", JSON.stringify(state.cartItem));
         },
         increaseQty: (state, action) => {
-            const index = state.cartItem.findIndex((el) => el._id === action.payload);
-            let qty = state.cartItem[index].qty;
-            const qtyInc = ++qty;
-            state.cartItem[index].qty = qtyInc;
-
-            const price = state.cartItem[index].price;
-            const total = price * qtyInc;
-
-            state.cartItem[index].total = total;
-            // Save state to local storage
-            localStorage.setItem("productState", JSON.stringify(state));
+            const itemToUpdate = state.cartItem.find(item => item._id === action.payload);
+            if (itemToUpdate) {
+                itemToUpdate.qty++;
+                itemToUpdate.total = itemToUpdate.qty * itemToUpdate.price;
+                localStorage.setItem("cartState", JSON.stringify(state.cartItem));
+            }
         },
         decreaseQty: (state, action) => {
-            const index = state.cartItem.findIndex((el) => el._id === action.payload);
-            let qty = state.cartItem[index].qty;
-            if (qty > 1) {
-                const qtyDec = --qty;
-                state.cartItem[index].qty = qtyDec;
-
-                const price = state.cartItem[index].price;
-                const total = price * qtyDec;
-
-                state.cartItem[index].total = total;
-                // Save state to local storage
-                localStorage.setItem("productState", JSON.stringify(state));
+            const itemToUpdate = state.cartItem.find(item => item._id === action.payload);
+            if (itemToUpdate && itemToUpdate.qty > 1) {
+                itemToUpdate.qty--;
+                itemToUpdate.total = itemToUpdate.qty * itemToUpdate.price;
+                localStorage.setItem("cartState", JSON.stringify(state.cartItem));
             }
         },
     }
 });
-
 
 export const {
     setDataProduct,
