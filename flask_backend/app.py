@@ -4,6 +4,7 @@ from langchain.prompts import PromptTemplate
 from langchain.llms import CTransformers
 import json
 import re
+import torch
 
 app = Flask(__name__)
 CORS(app)
@@ -24,12 +25,15 @@ def clean_response(response):
 
 
 def generate_recipe(food_type, ingredients, bmi):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     llm = CTransformers(model='models/llama-2-13b-chat.ggmlv3.q2_K.bin',
                         model_type="llama",
                         local_files_only=True,
+                        device=device,
                         config={
                             "temperature": 0.01,
-                            "max_new_tokens": 300,
+                            "max_new_tokens": 400,
                         })
     template = f"""
         Generate a step by step recipe which is personalized Indian {food_type} recipe with the following ingredients: {ingredients}
@@ -37,8 +41,6 @@ def generate_recipe(food_type, ingredients, bmi):
         BMI (Body Mass Index): {bmi}
 
         According to the serving size of one adult, also provide the calorie intake for the same, and do mention total calories.
-
-        Give all the steps and calorie count in plain text form, not in a code
     """
 
     prompt = PromptTemplate(input_variables=["food_type", "ingredients", "bmi"],
